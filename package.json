@@ -1,0 +1,25 @@
+{
+  "name": "backend_francisco_insignares_node",
+  "version": "1.0.0",
+  "description": "Proyecto Final Modulo Backend de NextU",
+  "main": "index.js",
+  "scripts":
+    {
+      "start": "nodemon index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finsignaresv/Backend_Francisco_Insignares.git"
+  },
+  "author": "Francisco Insignares",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finsignaresv/Backend_Francisco_Insignares/issues"
+  },
+  "homepage": "https://github.com/finsignaresv/Backend_Francisco_Insignares#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "nodemon": "^1.14.11"
+  }
+}
