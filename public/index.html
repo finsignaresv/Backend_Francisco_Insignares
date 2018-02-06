@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Meta informacion -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
   <title>Buscador</title>
+  <!-- Enlaces y Scrips de rangeSlider -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
   <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
   <link rel="stylesheet" href="css/ion.rangeSlider.css">
   <link rel="stylesheet" href="css/ion.rangeSlider.skinFlat.css">
   <script src="js/ion.rangeSlider.min.js"></script>
+  <!-- Enlace de estilos personalizados -->
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+  <!-- Barra superior fija -->
   <div class="navbar-fixed">
     <nav>
       <div class="blue darken-3 nav-wrapper center-align">
@@ -21,6 +25,7 @@
     </nav>
   </div>
 
+    <!-- Cuadro con opciones de busqueda personalizada -->
     <div class="row">
       <div class="col m4">
         <div class="card horizontal">
@@ -59,7 +64,7 @@
         </div>
       </div>
       <div class="col m8 lista">
-
+        <!-- Elementos html sobre los que se hace el append -->
         <div class="card horizontal" id="card">
           <div class="card-image">
             <img src="img/home.jpg">
@@ -90,12 +95,11 @@
             </div>
           </div>
         </div>
-
+        <!-- Aqui terminan los elementos html sobre los que se hace el append -->
       </div>
     </div>
 
-  
-
+  <!-- Vinculacion de archivo javascript personalizado y prototype -->
   <script src="js/app.js"></script>
   <script src="js/prototype.js" type="text/javascript"></script>
 

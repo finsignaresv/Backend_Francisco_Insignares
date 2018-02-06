@@ -14,6 +14,8 @@ var precioJSON          = "";
 var ciudadSeleccionada  = "";
 var tipoSeleccionado    = "";
 var customSearch        = false;
+var hayCiudad           = 0;
+var hayTipo             = 0;
 
 //Codigo para eliminar conflictos entre jquery y prototype
 var $j = jQuery.noConflict();
@@ -42,8 +44,11 @@ Array.prototype.unique=function(a)
       $j('select').material_select();
     });
 
+
+//Funcion autoejecutable que establece la comunciacion con el servidor
+// y genera la matrices de inmuebles, ciudades y tipos de inmuebles
 (function()
-  { /* ... */
+  {
     var URL = 'http://localhost:8082/data.json';
     $j.ajax(
       {
@@ -59,9 +64,10 @@ Array.prototype.unique=function(a)
               }
               else
                 {
+                  //La matrizJSON contendra todos los inmuebles registrados en el archivo JSON que esta en el servidor
                   matrizJSON = data;
                   iniciarlizarMatrices();
-                  //AQUI
+
                   // Listar ciudades en la casilla Select
                   $j.each(matrizJSON, (i,ciudad) =>
                     {
@@ -91,36 +97,7 @@ Array.prototype.unique=function(a)
       })
   })();
 
-$j(document).ready(function()
-  {
-    filtrarCiudad = function(matriz)
-      {
-        $j.each(matriz, (i,ciudad) =>
-          {
-            if (matriz[i].Ciudad == ciudadSeleccionada)
-              {
-                matrizFiltroCiudades.push(matriz[i]);
-              }
-          })
-        return matrizFiltroCiudades;
-      }
-
-    filtrarTipo = function(matriz)
-      {
-        tipoSeleccionado = $j('#tipo').val();
-        $j.each(matriz, (i,tipo) =>
-          {
-            if (matriz[i].Tipo == tipoSeleccionado)
-              {
-                matrizFiltroTipos.push(matriz[i]);
-              }
-            })
-          return matrizFiltroTipos;
-        }
-    });
-
-
-//Inicializador del elemento Slider
+//Inicializador del elemento ionRangeSlider
 $j("#rangoPrecio").ionRangeSlider(
   {
     type: "double",
@@ -132,6 +109,7 @@ $j("#rangoPrecio").ionRangeSlider(
     prefix: "$"
   })
 
+//Funcion para mostrar y ocultrar los elementos select de los filtros
 function setSearch()
   {
     let busqueda = $j('#checkPersonalizada')
@@ -149,16 +127,40 @@ function setSearch()
       })
   }
 
-$j(function()
+//Funcion anonima que busca y muestra los inmuebles de acuerdo a los filtros colocados por el usuario
+$j( () =>
   {
-    $j("#buscar").on("click", function()
+    //Se preciona el boton Iniciar para aplicar los filtros y mostrar los resultados
+    $j("#buscar").on("click", () =>
       {
-        //Se preciona el boton Iniciar
+        hayCiudad = 0;
+        hayTipo = 0;
+        ciudadSeleccionada = $j('#ciudad').val();
+        tipoSeleccionado = $j('#tipo').val();
+        $j.each(ciudades, (i,ciudad) =>
+          {
+            if (ciudadSeleccionada == ciudades[i])
+              {
+                hayCiudad = 1;
+              }
+          })
+
+        $j.each(tipos, (i,ciudad) =>
+          {
+            if (tipoSeleccionado == tipos[i])
+              {
+                hayTipo = 1;
+              }
+          })
+        //En caso de que no se halla activado el switch para mostrar los filtros select se muestran todos los inmuebles
         if (customSearch == false)
           {
+            iniciarlizarMatrices();
+            removerElementos();
             activarPanel();
             mostrarElementos(matrizJSON);
           }
+          //En caso de que se haya activado el switch y se muestren los filtros select
           else if (customSearch == true)
             {
               iniciarlizarMatrices();
@@ -176,47 +178,100 @@ $j(function()
                       matrizFiltroPrecios.push(matrizJSON[i]);
                     }
                 })
-                  matrizMostrar = matrizFiltroPrecios;
-                  ciudadSeleccionada = $j('#ciudad').val();
-                  tipoSeleccionado = $j('#tipo').val();
-                  if (ciudadSeleccionada != "")
+
+              //Caso1: Solo se tiene el rango de precios, no se seleccionada nada en ciudad y tipo
+              if ((hayCiudad == 0) && (hayTipo == 0))
+                {
+                  if (matrizFiltroPrecios.length > 0)
+                    {
+                      activarPanel();
+                      mostrarElementos(matrizFiltroPrecios);
+                    }
+                    else
+                      {
+                        removerElementos();
+                        alert("No hay inmuebles disponibles bajo los parametros solicitados")
+                      }
+                }
+
+              //Caso2: Se tiene el rango de precios y se selecciona una ciudad
+              if ((hayCiudad == 1) && (hayTipo == 0))
+                {
+                  $j.each(matrizFiltroPrecios, (i,ciudad) =>
+                    {
+                      if (matrizFiltroPrecios[i].Ciudad == ciudadSeleccionada)
+                        {
+                          matrizMostrar.push(matrizFiltroPrecios[i]);
+                        }
+                    })
+                    if (matrizMostrar.length > 0)
+                      {
+                        activarPanel();
+                        mostrarElementos(matrizMostrar);
+                      }
+                      else
+                        {
+                          removerElementos();
+                          alert("No hay inmuebles disponibles bajo los parametros solicitados")
+                        }
+                }
+
+                //Caso3: Se tiene el rango de precios y se selecciona un tipo de inmueble
+                if ((hayCiudad == 0) && (hayTipo == 1))
+                  {
+                    $j.each(matrizFiltroPrecios, (i,tipo) =>
+                      {
+                        if (matrizFiltroPrecios[i].Tipo == tipoSeleccionado)
+                          {
+                            matrizMostrar.push(matrizFiltroPrecios[i]);
+                          }
+                      })
+                    if (matrizMostrar.length > 0)
+                      {
+                        activarPanel();
+                        mostrarElementos(matrizMostrar);
+                      }
+                      else
+                        {
+                          removerElementos();
+                          alert("No hay inmuebles disponibles bajo los parametros solicitados")
+                        }
+                  }
+
+                  //Caso4: Se tiene el rango de precios, se selecciona una ciudad y tambien un tipo de inmueble
+                  if ((hayCiudad == 1) && (hayTipo == 1))
                     {
                       $j.each(matrizFiltroPrecios, (i,ciudad) =>
                         {
-                          if (matrizFiltroPrecios[i].Ciudad = ciudadSeleccionada)
+                          if ((matrizFiltroPrecios[i].Ciudad == ciudadSeleccionada) && (matrizFiltroPrecios[i].Tipo == tipoSeleccionado))
                             {
-                              matrizResultante.push(matrizFiltroPrecios[i]);
+                              matrizMostrar.push(matrizFiltroPrecios[i]);
                             }
-                            if (matrizFiltroPrecios[i].Tipo = tipoSeleccionado)
-                              {
-                                matrizMostrar.push(matrizFiltroPrecios[i]);
-                              }
                         })
-                      console.log(matrizMostrar);
-                    }
-                    else if ((ciudadSeleccionada = "") && (tipoSeleccionado != ""))
-                      {
-                        $j.each(matrizFiltroPrecios, (i,tipo) =>
+                      if (matrizMostrar.length > 0)
+                        {
+                          activarPanel();
+                          mostrarElementos(matrizMostrar);
+                        }
+                        else
                           {
-                            if (matrizFiltroPrecios[i].Tipo = tipoSeleccionado)
-                              {
-                                matrizMostrar.push(matrizFiltroPrecios[i]);
-                              }
-                          })
-                      }
-                    activarPanel();
-                    mostrarElementos(matrizMostrar);
+                            removerElementos();
+                            alert("No hay inmuebles disponibles bajo los parametros solicitados")
+                          }
+                    }
             }
       })
   })
 
-activarPanel = function()
+//Funcion que activa el panel para pder mostrar los resultados de la busqueda
+activarPanel = () =>
   {
     $j('.lista').show();
     $j('#card').hide();
   }
 
-mostrarElementos = function(json)
+//Funcion que imprime los resultados en pantalla a traves de un append de elementos html
+mostrarElementos = (json) =>
   {
     $j.each(json, (i,inmueble) =>
       {
@@ -253,21 +308,20 @@ mostrarElementos = function(json)
       })
   }
 
-iniciarlizarMatrices = function()
+//Funcion que inicializa las matrices de una busqueda a otra
+iniciarlizarMatrices = () =>
   {
     matrizFiltroPrecios.length  = 0;
     matrizFiltroCiudades.length = 0;
     matrizFiltroTipos.length    = 0;
     matrizMostrar.length        = 0;
+    matrizResultante.length     = 0;
   }
 
-removerElementos = function()
+//Funcion que remueve todos los elementos de una busqueda impresos en pantalla
+removerElementos = () =>
   {
     $j(".card[id='card']").empty();
   }
-
-//  var sighting = "<div><span class=\"feed_name\"></span></div>",
-    //  $elem = $(sighting).find("span.feed_name").text("hello world").parent();
-  //$("#sightings").append($elem);
 
 setSearch()

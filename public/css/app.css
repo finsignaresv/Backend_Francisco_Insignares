@@ -1,62 +1,74 @@
+/* Color de fondo del body */
 body
   {
     background-color: #bdc3c7;
   }
 
+/*Estilos del encabezado */
 nav div > h4
   {
     margin: 0;
     padding-top: .5em;
   }
 
+/*Estilos del boton buscar */
 #buscar
   {
     margin: 2em 0;
   }
 
+/*Estilos del elemento card */
 .card-content
   {
     padding: 20px !important;
   }
 
+/* Estilos para fijar posicion del panel */
 .panel
   {
     position: fixed;
   }
 
+/* Estilos para ocultar los select de los filtros */
 .invisible
   {
     display: none;
   }
 
+/* Estilo para cuando se pasa el mause por el elemento card */
 div.lista .card:hover
   {
     opacity: 0.8;
     cursor: pointer;
   }
 
+/*Estilos de la lista */
 div.lista
   {
     max-height: 100%;
     overflow: scroll;
   }
 
+/* Estilos de la imagen de la lista */
 .lista img
   {
     max-width: 250px !important;
   }
 
+/* Estilos del elemenjto personalizada */
 #personalizada
   {
     margin-top: 1em;
   }
 
+/*Estilos de la clase select-wrapper */
 .select-wrapper
   {
     width: 50%;
     margin: 0 auto !important;
   }
 
+/*Estilos de la lista */
 .lista
   {
     display: none;

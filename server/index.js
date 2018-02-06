@@ -6,7 +6,7 @@ const   http        = require('http'),
 
 
 //Variables globales
-var     port      = process.env.PORT || 8082,
+const   port      = process.env.PORT || 8082,
         app       = express(),
         Server    = http.createServer(app);
 
